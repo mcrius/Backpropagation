@@ -37,10 +37,10 @@ public class Network implements Serializable {
                 if (i == 0) {
                     hiddenLayers[i] = new Layer(hiddenLayer[i], inputneurons);
                 } else {
-                    hiddenLayers[i] = new Layer(hiddenLayer[i], hiddenLayers[i - 1].getInputCount());
+                    hiddenLayers[i] = new Layer(hiddenLayer[i], hiddenLayers[i - 1].getNeuronCount());
                 }
             }
-            output = new Layer(1, hiddenLayers[hiddenlayercount - 1].getNeuronCount());
+            output = new Layer(outputcount, hiddenLayers[hiddenlayercount - 1].getNeuronCount());
         } else {
             output = new Layer(outputcount, inputneurons);
         }

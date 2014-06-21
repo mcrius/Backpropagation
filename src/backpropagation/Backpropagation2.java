@@ -6,29 +6,23 @@
 package backpropagation;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import reader.FileUtils;
 
 /**
  *
  * @author bzzzt
  */
-public class Backpropagation {
+public class Backpropagation2 {
 
 //    public final static int PATTERN_COUNT = 4;
 //    public final static int PATTERN_SIZE = 2;
 //    public final static int NETWORK_INPUTNEURONS = 3;
     public final static int NETWORK_OUTPUT = 3;
-    public final static int HIDDEN_LAYERS = 0;
+    public final static int HIDDEN_LAYERS = 2;
     public final static int EPOCHS = 500000;
 //    public final static int EPOCHS = 10000;
     public final static double ERROR_THRESH = 0.001d;
-    public static double bestPrecision = 0d;
+    public static double bestPrecision = 0.7d;
 
     /**
      * @param args the command line arguments
@@ -40,23 +34,25 @@ public class Backpropagation {
 
         int patternSize = trainData.getInput()[0].length;
 //        int patternCount = trainData.getInput().length;
-        int[] layers = {};
 
         for (int i = 0; i < 10; i++) {
-            Network net = new Network();
-            net.init(patternSize, patternSize, NETWORK_OUTPUT, layers, HIDDEN_LAYERS);
-            train(net, trainData.getOutput(), trainData.getInput());
-            //train without hidden layers
-            double p = test(net, testData.getInput(), testData.getOutput());
-            if (p > bestPrecision) {
-                FileUtils.saveNet(net, "0");
-                bestPrecision = p;
+            for (int j = 1; j < 11; j++) {
+                for (int k = 1; k < 11; k++) {
+                    int[] layers = {j, k};
+                    Network net = new Network();
+                    net.init(patternSize, patternSize, NETWORK_OUTPUT, layers, HIDDEN_LAYERS);
+                    train(net, trainData.getOutput(), trainData.getInput());
+                    //train without hidden layers
+                    double p = test(net, testData.getInput(), testData.getOutput());
+                    if (p > bestPrecision) {
+                        FileUtils.saveNet(net, "2_" + j + "_" + k);
+                        bestPrecision = p;
+                    }
+                }
             }
         }
         System.out.println(bestPrecision);
     }
-
-
 
     private static void train(Network net, double[][] desired, double[][] input) {
         double error = 0;

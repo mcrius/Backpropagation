@@ -37,11 +37,12 @@ public class Neuron implements Serializable{
             this.deltas = new double[count];
             
             for (int i = 0; i < count; i++) {
-                this.weights[i] = (r.nextDouble() - 0.5d);
+                
+                this.weights[i] = (0.001 - 0.0001) * r.nextDouble() + 0.0001;
                 deltas[i] = 0d;
             }
             this.gain = 1.0d;
-            this.weightGain = (r.nextDouble() - 0.5d);
+            this.weightGain = (0.001 - 0.0001) * r.nextDouble() + 0.0001;
         }
     }
 }

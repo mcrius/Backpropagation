@@ -5,11 +5,16 @@
  */
 package reader;
 
+import backpropagation.Backpropagation;
+import backpropagation.Network;
 import backpropagation.TrainingData;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,12 +85,14 @@ public class FileUtils {
                     lines.add(splits);
                 }
             }
-            double[][] inputs = new double[lines.size()][lines.get(0).length - 1];
-            double[][] outputs = new double[lines.size()][1];
+            double[][] inputs = new double[lines.size()][lines.get(0).length - 3];
+            double[][] outputs = new double[lines.size()][3];
             for (int i = 0; i < inputs.length; i++) {
-                for (int j = 0; j < lines.get(i).length - 2; j++) {
+                for (int j = 0; j < lines.get(i).length - 3; j++) {
                     inputs[i][j] = Double.parseDouble(lines.get(i)[j]);
                 }
+                outputs[i][2] = Double.parseDouble(lines.get(i)[lines.get(i).length - 3]);
+                outputs[i][1] = Double.parseDouble(lines.get(i)[lines.get(i).length - 2]);
                 outputs[i][0] = Double.parseDouble(lines.get(i)[lines.get(i).length - 1]);
             }
             return new TrainingData(inputs, outputs);
@@ -93,13 +100,12 @@ public class FileUtils {
         }
         return null;
     }
-    
-    
-    public static TrainingData test(){
+
+    public static TrainingData test() {
         double[][] in = {
             {0, 0},
-            {1, 0},
             {0, 1},
+            {1, 0},
             {1, 1}
         };
         double[][] out = {
@@ -109,5 +115,28 @@ public class FileUtils {
             {0}
         };
         return new TrainingData(in, out);
+    }
+
+    public static void saveNet(Network net, String c) {
+        File f = new File("net_" + c + ".nn");
+        if (f.exists()) {
+            f.delete();
+            try {
+                f.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(Backpropagation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        try {
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f))) {
+                oos.writeObject(net);
+                oos.flush();
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Backpropagation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Backpropagation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }
